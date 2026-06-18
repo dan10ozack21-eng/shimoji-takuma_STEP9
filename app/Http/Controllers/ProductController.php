@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with('company')->get();
         
         return view('index', compact('products'));
     }
@@ -21,7 +21,14 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $products = Product::findOrFail($id);
-        return view('detail', compact('products'));
+        $product = Product::with(['company', 'likes'])->findOrFail($id);
+        return view('detail', compact('product'));
+    }
+
+    public function purchase($id)
+    {
+        $product = Product::with('company')->findOrFail($id);
+
+        return view('purchase', compact('product'));
     }
 }
