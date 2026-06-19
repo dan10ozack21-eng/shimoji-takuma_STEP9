@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>マイページ</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+        <h1>マイページ</h1>
+        <a href="#" class="btn btn-primary px-3 mt-2">アカウント編集</a>
+        <div class="d-flex gap-5 mt-3">
+            <div class="d-flex flex-column">
+                <span>ユーザー名：{{ $user->name }}</span>
+                <span>Eメール：{{ $user->email }}</span>
+            </div>
+            <div class="d-flex flex-column">
+                <span>名前：{{ $user->name_kanji }}</span>
+                <span>カナ：{{ $user->name_kana }}</span>
+            </div>
+        </div>
+
+        <h3 class=mt-5>＜出品商品＞</h3>
+        <div class="d-flex justify-content-end">
+            <a href="#" class="btn btn-primary">新規登録</a>
+        </div>
+        <table border="table table-bordered align-middle mt-3">
+            <thead>
+                <tr>
+                    <th>商品番号</th>
+                    <th>商品名</th>
+                    <th>商品説明</th>
+                    <th>料金(¥)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($products as $product)
+                <tr>
+                    <td>{{ $product->id }}</td>
+                    <td>{{ $product->product_name }}</td>
+                    <td>{{ $product->description }}</td>
+                    <td>{{ $product->price }}</td>
+                    <td>
+                        <a href="{{ route('detail', $product->id) }}" class="btn btn-success btn-sm">詳細</a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <h3 class="mt-5">＜購入した商品＞</h3>
+        <table border="table table-bordered align-middle mt-3">
+            <thead>
+                <tr>
+                    <th>商品名</th>
+                    <th>商品説明</th>
+                    <th>料金(¥)</th>
+                    <th>個数</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($sales as $sale)
+                <tr>
+                    <td>{{ $sale->product->product_name }}</td>
+                    <td>{{ $sale->product->description }}</td>
+                    <td>{{ $sale->product->price }}</td>
+                    <td>{{ $sale->quantity }}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </body>
+</html>
