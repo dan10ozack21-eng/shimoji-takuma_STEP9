@@ -113,6 +113,50 @@ class ProductController extends Controller
             'img_path' => $imagePath,
         ]);
 
-        return redirect()->route('mypage')->with('success', '賞品が新しく登録されました！');
+        return redirect()->route('mypage')->with('success', '商品が新しく登録されました！');
+    }
+
+    public function editAccount()
+    {
+        $user = \App\Models\User::find(1);
+
+        return view('edit_account', compact('user'));
+    }
+
+    public function updateAccount(Request $request) 
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'name_kanji' => 'required|string|max:255',
+            'name_kana' => 'required|string|max:255',
+        ]);
+
+        $user = \App\Models\User::find(1);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->name_kanji = $request->name_kanji;
+        $user->name_kana = $request->name_kana;
+
+        $user->save();
+
+        return redirect()->route('mypage')->with('success', 'アカウント情報を更新しました！');
+    }
+
+    public function contact()
+    {
+        return view('contact');
+    }
+
+    public function sendContact(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'contact' => 'required|string',
+        ]);
+
+        return redirect()->route('index')->with('success', 'お問い合わせを送信しました！');
     }
 }

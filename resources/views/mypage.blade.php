@@ -8,14 +8,14 @@
     </head>
     <body>
         <h1>マイページ</h1>
-        
+
         @if (session('success'))
         <div class="alert alert-success mt-3" role="alert">
             {{ session('success') }}
         </div>
         @endif
 
-        <a href="#" class="btn btn-primary px-3 mt-2">アカウント編集</a>
+        <a href="{{ route('edit_account') }}" class="btn btn-primary px-3 mt-2">アカウント編集</a>
         <div class="d-flex gap-5 mt-3">
             <div class="d-flex flex-column">
                 <span>ユーザー名：{{ $user->name }}</span>
