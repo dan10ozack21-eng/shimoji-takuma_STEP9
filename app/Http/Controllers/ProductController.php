@@ -87,4 +87,32 @@ class ProductController extends Controller
 
         return view('mypage', compact('user', 'products', 'sales'));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'price' => 'required|integer|min:0',
+            'description' => 'required|string',
+            'stock' => 'required|integer|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+        }
+
+        \App\Models\Product::create([
+            'user_id' => 1,
+            'company_id' => 1,
+            'product_name' => $request->product_name,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'description' => $request->description,
+            'img_path' => $imagePath,
+        ]);
+
+        return redirect()->route('mypage')->with('success', '賞品が新しく登録されました！');
+    }
 }

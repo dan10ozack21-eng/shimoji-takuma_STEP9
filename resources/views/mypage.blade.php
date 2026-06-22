@@ -8,6 +8,13 @@
     </head>
     <body>
         <h1>マイページ</h1>
+        
+        @if (session('success'))
+        <div class="alert alert-success mt-3" role="alert">
+            {{ session('success') }}
+        </div>
+        @endif
+
         <a href="#" class="btn btn-primary px-3 mt-2">アカウント編集</a>
         <div class="d-flex gap-5 mt-3">
             <div class="d-flex flex-column">
@@ -22,7 +29,7 @@
 
         <h3 class=mt-5>＜出品商品＞</h3>
         <div class="d-flex justify-content-end">
-            <a href="#" class="btn btn-primary">新規登録</a>
+            <a href="{{ route('create_product') }}" class="btn btn-primary">新規登録</a>
         </div>
         <table border="table table-bordered align-middle mt-3">
             <thead>
