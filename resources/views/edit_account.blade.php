@@ -33,7 +33,7 @@
             <input type="text" id="name_kana" name="name_kana" class="form-control" value="{{ $user->name_kana }}">
         </div>
 
-        <div class="d-flex gap- mt-4">
+        <div class="d-flex gap-3 mt-4">
             <a href="{{ route('mypage') }}" class="btn btn-secondary px-3 w-auto">マイページに戻る</a>
             <button type="submit" class="btn btn-primary px-4 w-auto">更新</button>
         </div>

@@ -159,4 +159,53 @@ class ProductController extends Controller
 
         return redirect()->route('index')->with('success', 'お問い合わせを送信しました！');
     }
+
+    public function showMyProduct($id)
+    {
+        $product = \App\Models\Product::findOrFail($id);
+
+        return view('mypage_product_detail', compact('product'));
+    }
+
+    public function destroyProduct($id)
+    {
+        $product = \App\Models\Product::findOrFail($id);
+
+        $product->delete();
+
+        return redirect()->route('mypage')->with('success', '商品を削除しました。');
+    }
+
+    public function editMyProduct($id)
+    {
+        $product = \App\Models\Product::findOrFail($id);
+
+        return view('mypage_product_edit', compact('product'));
+    }
+
+    public function updateMyProduct(Request $request, $id)
+    {
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'price' => 'required|integer|min:0',
+            'description' => 'required|string',
+            'stock' => 'required|integer|min:0',
+            'img_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $product = \App\Models\Product::find($id);
+
+        $product->product_name = $request->product_name;
+        $product->price = $request->price;
+        $product->description = $request->description;
+        $product->stock = $request->stock;
+        if ($request->hasFile('img_path')) {
+            $img_path = $request->file('img_path')->store('img_path', 'public');
+            $product->img_path = $img_path;
+        }
+
+        $product->save();
+
+        return redirect()->route('mypage_product_detail', $product->id)->with('success', '出品商品情報の更新が完了しました！');
+    }
 }

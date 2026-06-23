@@ -26,3 +26,11 @@ Route::post('/mypage/update', [ProductController::class, 'updateAccount'])->name
 Route::get('/contact', [ProductController::class, 'contact'])->name('contact');
 
 Route::post('/contact/send', [ProductController::class, 'sendContact'])->name('send_contact');
+
+Route::get('/mypage/product/{id}', [ProductController::class, 'showMyProduct'])->name('mypage_product_detail');
+
+Route::post('/mypage/product/{id}/delete', [ProductController::class, 'destroyProduct'])->name('mypage_product_destroy');
+
+Route::get('/mypage/product/{id}/edit', [ProductController::class, 'editMyProduct'])->name('mypage_product_edit');
+
+Route::post('/mypage/product/{id}/update', [ProductController::class, 'updateMyProduct'])->name('mypage_product_update');
