@@ -38,14 +38,9 @@ class ProductController extends Controller
     {
         // $user = Auth::user();
 
-        $user = (object)[
-            'name'       => 'Cy',
-            'email'      => 'cy.com',
-            'name_kanji' => '山田太郎',
-            'name_kana'  => 'ヤマダタロウ'
-        ];
+        $user = \Auth::user();
 
-        $products = Product::orderBy('id', 'asc')->get();
+        $products = Product::where('user_id', \Auth::id())->orderBy('id', 'asc')->get();
 
         $sales = collect([
             (object)[
@@ -104,7 +99,7 @@ class ProductController extends Controller
         }
 
         \App\Models\Product::create([
-            'user_id' => 1,
+            'user_id' => \Auth::id(),
             'company_id' => 1,
             'product_name' => $request->product_name,
             'price' => $request->price,
@@ -118,7 +113,7 @@ class ProductController extends Controller
 
     public function editAccount()
     {
-        $user = \App\Models\User::find(1);
+        $user = \Auth::user();
 
         return view('edit_account', compact('user'));
     }
@@ -132,7 +127,7 @@ class ProductController extends Controller
             'name_kana' => 'required|string|max:255',
         ]);
 
-        $user = \App\Models\User::find(1);
+        $user = \App\Models\User::find(\Auth::id());
 
         $user->name = $request->name;
         $user->email = $request->email;

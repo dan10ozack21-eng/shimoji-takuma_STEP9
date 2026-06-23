@@ -34,3 +34,6 @@ Route::post('/mypage/product/{id}/delete', [ProductController::class, 'destroyPr
 Route::get('/mypage/product/{id}/edit', [ProductController::class, 'editMyProduct'])->name('mypage_product_edit');
 
 Route::post('/mypage/product/{id}/update', [ProductController::class, 'updateMyProduct'])->name('mypage_product_update');
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
