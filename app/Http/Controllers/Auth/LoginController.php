@@ -27,7 +27,7 @@ class LoginController extends Controller implements HasMiddleware
      *
      * @var string
      */
-    protected $redirectTo = '/mypage';
+    protected $redirectTo = '/index';
 
     /**
      * Create a new controller instance.

@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 
@@ -10,6 +11,8 @@ Route::get('/', function () {
 Route::get('/index', [ProductController::class, 'index'])->name('index');
 
 Route::get('/product/create', [ProductController::class, 'create'])->name('create_product');
+
+Route::get('/product/search', [ProductController::class, 'search'])->name('search');
 
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('detail');
 
@@ -37,3 +40,4 @@ Route::post('/mypage/product/{id}/update', [ProductController::class, 'updateMyP
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

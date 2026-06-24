@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>マイページ</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
         <h1>マイページ</h1>
 
         @if (session('success'))
@@ -23,7 +18,7 @@
             </div>
             <div class="d-flex flex-column">
                 <span>名前：{{ $user->name_kanji }}</span>
-                <span>カナ：{{ $user->name_kana }}</span>
+                <span>カナ：{{ $user->name_kana ?? '(未登録)' }}</span>
             </div>
         </div>
 
@@ -31,7 +26,7 @@
         <div class="d-flex justify-content-end">
             <a href="{{ route('create_product') }}" class="btn btn-primary">新規登録</a>
         </div>
-        <table border="table table-bordered align-middle mt-3">
+        <table class="table table-bordered align-middle mt-3">
             <thead>
                 <tr>
                     <th>商品番号</th>
@@ -57,7 +52,7 @@
         </table>
 
         <h3 class="mt-5">＜購入した商品＞</h3>
-        <table border="table table-bordered align-middle mt-3">
+        <table class="table table-bordered align-middle mt-3">
             <thead>
                 <tr>
                     <th>商品名</th>
@@ -77,5 +72,5 @@
                 @endforeach
             </tbody>
         </table>
-    </body>
-</html>
+</div>
+@endsection

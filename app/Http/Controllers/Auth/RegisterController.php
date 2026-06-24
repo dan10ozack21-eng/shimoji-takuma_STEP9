@@ -53,6 +53,8 @@ class RegisterController extends Controller implements HasMiddleware
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
+            'name_kanji' => ['required', 'string', 'max:255'],
+            'name_kana' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -69,8 +71,7 @@ class RegisterController extends Controller implements HasMiddleware
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'name_kanji' => $data['name'],
-            'name_kana' => 'テストカナ',
+            'name_kanji' => $data['name_kanji'],
             'company_id' => 1,
         ]);
     }

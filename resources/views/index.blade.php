@@ -1,11 +1,7 @@
-<!DOCTYPE html>
-<html lang=ja>
-    <head>
-        <meta charset="UTF-8">
-        <title>商品一覧</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body class="container mt-4">
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
     @if (session('success'))
     <div class="alert alert-success mt-3" role="alert">
         {{ session('success') }}
@@ -14,7 +10,23 @@
     
         <h1>商品一覧</h1>
 
-        <table border="table table-bordered">
+        <form action="{{ route('search') }}" method="GET" class="my-3">
+            <div class="d-flex gap-4 px-2 align-items-center">
+                <div class="col-4">
+                    <input type="text" name="product_name" class="form-control" placeholder="商品名を入力" value="{{ request('product_name') }}">
+                </div>
+
+                <div class="col-4 d-flex align-items-center gap-2">
+                    <input type="number" name="min_price" class="form-control" placeholder="最低価格" value="{{ request('min_price') }}" min="0">
+                    <span>~</span>
+                    <input type="number" name="max_price" class="form-control" placeholder="最高価格" value="{{ request('max_price') }}" min="0">
+                </div>
+
+                <button type="submit" class="btn btn-primary">検索</button>
+            </div>
+        </form>
+
+        <table class="table table-bordered table-striped mt-3">
             <thead>
                 <tr>
                     <th>商品番号</th>
@@ -25,7 +37,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($products as $product)
+                @forelse($products as $product)
                 <tr>
                     <td>{{ $product->id }}</td>
                     <td>{{ $product->product_name }}</td>
@@ -36,8 +48,12 @@
                         <a href="{{ route('detail', $product->id) }}" class="btn btn-primary">詳細</a>
                     </td>
                 </tr>
-                @endforeach
+                @empty
+                <tr>
+                    <td colspan="6" class="text-center">該当する商品はありません。</td>
+                </tr>
+                @endforelse
             </tbody>
         </table>
-    </body>
-</html>
+</div>
+@endsection

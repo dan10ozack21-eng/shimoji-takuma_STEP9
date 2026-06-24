@@ -203,4 +203,25 @@ class ProductController extends Controller
 
         return redirect()->route('mypage_product_detail', $product->id)->with('success', '出品商品情報の更新が完了しました！');
     }
+
+    public function search(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->filled('product_name')) {
+            $query->where('product_name', 'like', '%'. $request->product_name . '%');
+        }
+
+        if ($request->filled('min_price')) {
+            $query->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->filled('max_price')) {
+            $query->where('price', '<=', $request->max_price);
+        }
+
+        $products = $query->orderBy('id', 'asc')->get();
+
+        return view('index', compact('products'));
+    }
 }

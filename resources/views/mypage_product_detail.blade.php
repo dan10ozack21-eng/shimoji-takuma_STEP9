@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>【出品者用】商品詳細確認 - {{ $product->product_name }}</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body class="container mt-4" style="max-width: 800px;">
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
         <h1>出品商品詳細</h1>
 
         <div class="mt-4">
@@ -32,5 +27,5 @@
             </form>
             <a href="{{ route('mypage') }}" class="btn btn-secondary">戻る</a>
         </div>
-    </body>
-</html>
+</div>
+@endsection

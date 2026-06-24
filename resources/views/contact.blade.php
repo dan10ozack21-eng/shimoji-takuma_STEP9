@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>お問い合わせ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="container mt-4" style="max-width: 600px;">
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
     <h1 class="mb-4 fw-bold">お問い合わせフォーム</h1>
     
     <form action="{{ route('send_contact') }}" method="POST">
@@ -31,5 +26,5 @@
             <a href="{{ route('index')}}" class="btn btn-secondary px-3 w-auto">戻る</a>
         </div>
     </form>
-</body>
-</html>
+</div>
+@endsection
