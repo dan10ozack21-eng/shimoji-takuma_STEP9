@@ -16,7 +16,13 @@ Route::get('/product/search', [ProductController::class, 'search'])->name('searc
 
 Route::get('/product/{id}', [ProductController::class, 'show'])->name('detail');
 
+Route::post('/product/{id}/toggle-like', [ProductController::class, 'toggleLike'])
+->name('products.toggle_like')
+->middleware('auth');
+
 Route::get('/purchase/{id}', [ProductController::class, 'purchase'])->name('purchase');
+
+Route::post('/purchase/{id}', [ProductController::class, 'completePurchase'])->name('products.purchase');
 
 Route::get('/mypage', [ProductController::class, 'mypage'])->name('mypage');
 

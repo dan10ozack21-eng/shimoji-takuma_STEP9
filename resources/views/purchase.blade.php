@@ -5,6 +5,8 @@
         <div class="container mt-4" style="max-width: 500px;">
             <h1>購入画面</h1>
 
+            <form action="{{ route('products.purchase', $product->id) }}" method="POST">
+                @csrf
             <div class="mt-4">
                  <p>商品名：{{ $product->product_name }}</p>
                  <p>説明：{{ $product->description }}</p>
@@ -23,8 +25,6 @@
             <p>会社：{{ $product->company->company_name }} </p>
             </div>
 
-            <form action="#" method="POST">
-                @csrf 
                 <div class="d-flex gap-2">
                     @if($product->stock >0)
                      <button type="submit" class="btn btn-primary px-4">購入する</button>

@@ -32,7 +32,12 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
+<!--                    <ul class="navbar-nav me-auto">
+                        
+                    </ul>
+-->
+                    <!-- Right Side Of Navbar -->
+                    <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('index') }}">Home</a>
                         </li>
@@ -43,13 +48,7 @@
                         </li>
                         @endauth
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('contact') }}">お問い合わせ</a>
-                        </li>
-                    </ul>
 
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
                     @guest
                         @if (Route::has('login'))
                         <li class="nav-item me-2">            
@@ -91,10 +90,13 @@
         <footer class="bg-white border-top py-3 mt-auto">
             <div class="container text-center text-muted">
                 <a href="{{ route('contact') }}" class="btn btn-primary">お問い合わせ</a>
-                <div class="d-flex justify-content-center gap-3 mb-2">
+                <div class="d-flex justify-content-center gap-3 mt-2 mb-2">
                     <a href="{{ route('index') }}" class="text-decoration-none text-secondary">Home</a>
+                    @auth
                     <a href="{{ route('mypage') }}" class="text-decoration-none text-secondary">マイページ</a>
+                    @endauth
                 </div>
+                <small>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</small>
             </div>
 
         </footer>

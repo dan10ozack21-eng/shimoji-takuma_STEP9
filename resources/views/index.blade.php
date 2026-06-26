@@ -42,7 +42,13 @@
                     <td>{{ $product->id }}</td>
                     <td>{{ $product->product_name }}</td>
                     <td>{{ $product->description }}</td>
-                    <td>{{ $product->img_path }}</td>
+                    <td>
+                    @if($product->img_path) 
+                    <img src="{{ asset('storage/' . $product->img_path) }}" alt="{{ $product->product_name }}" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
+                    @else
+                    <span class="text-muted">なし</span>
+                    @endif
+                    </td>
                     <td>{{ $product->price }}</td>
                     <td>
                         <a href="{{ route('detail', $product->id) }}" class="btn btn-primary">詳細</a>

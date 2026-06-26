@@ -28,7 +28,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="img_path" class="form-label fw-semibold">商品画像</label>
+            <label for="img_path" class="form-label fw-semibold">商品画像：</label>
                 @if($product->img_path)
                 <img src="{{ asset('storage/' . $product->img_path) }}" class="img-fluid rounded border shadow-sm" alt="商品画像" style="max-height: 400px; object-fit: cover;">
                 @else

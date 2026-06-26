@@ -15,6 +15,26 @@
             <p>会社：{{ $product->company->company_name }} </p>
           </div>
 
+          <div class="mt-3">
+            @auth
+            <form action="{{ route('products.toggle_like', $product->id) }}" method="POST">
+              @csrf
+              @if($isLiked)
+              <button type="submit" class="btn text-danger p-0 border-0 shadow-none" style="font-size: 2rem; line-height: 1;">
+                ♥
+              </button>
+              @else
+              <button type="submit" class="btn text-muted p-0 border-0 shadow-none" style="font-size: 2rem; line-height: 1; transition: color 0.2s;" 
+              onmouseover="this.style.color='#dc3545'" onmouseout="this.style.color='#6c757d'">
+              ♡
+              </button>
+              @endif
+            </form>
+            @else
+            <p class="text-muted small">※お気に入り機能を利用するには<a href="{{ route('login') }}">ログイン</a>が必要です。</p>
+            @endauth
+          </div>
+
           <div class="d-flex gap-2 mt-3">
             <a href="{{ route('purchase', $product->id) }}" class="btn btn-primary px-4">カートに追加する</a>
 

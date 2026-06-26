@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Like;
 // use App\Models\Sales;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,6 +17,24 @@ class ProductController extends Controller
         return view('index', compact('products'));
     }
 
+    public function toggleLike($id)
+    {
+        $userId = Auth::id();
+
+        $like = Like::where('user_id', $userId)->where('product_id', $id)->first();
+
+        if ($like) {
+            $like->delete();
+        } else {
+            Like::create([
+                'user_id' => $userId,
+                'product_id' => $id,
+            ]);
+        }
+
+        return redirect()->back();
+    }
+
     public function create()
     {
         return view('create');
@@ -24,7 +43,13 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::with(['company', 'likes'])->findOrFail($id);
-        return view('detail', compact('product'));
+
+        $isLiked = false;
+        if (auth()->check()) {
+            $isLiked = $product->likes->contains('user_id', auth()->id());
+        }
+
+        return view('detail', compact('product', 'isLiked'));
     }
 
     public function purchase($id)
@@ -32,6 +57,42 @@ class ProductController extends Controller
         $product = Product::with('company')->findOrFail($id);
 
         return view('purchase', compact('product'));
+    }
+
+    public function completePurchase(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+
+        $quantity = $request->input('quantity', 1);
+        
+        if ($product->stock <= $quantity) {
+            if ($request->wantsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'error' => '在庫が不足しております。現在の在庫は{$product->stock}個です。'
+                ], 400);
+            }
+
+            return redirect()->back()->with('error', '申し訳ありません。在庫が不足しております。(残り{$product->stock}個)');
+        }
+
+        $product->decrement('stock', $quantity);
+
+        $userId = auth()->check() ? auth()->id() : null;
+
+        \App\Models\Sales::create([
+            'user_id' => $userId,
+            'product_id' => $product->id,
+            'quantity' => $quantity,
+        ]);
+
+        if ($request->wantsJson() || $request->is('api/*')) {
+            return response()->json([
+                'message' => '購入が完了しました！',
+                'product' => $product
+            ], 200);
+        }
+
+        return redirect()->route('index')->with('success', '商品を購入しました！');
     }
 
     public function mypage()
@@ -42,43 +103,10 @@ class ProductController extends Controller
 
         $products = Product::where('user_id', \Auth::id())->orderBy('id', 'asc')->get();
 
-        $sales = collect([
-            (object)[
-                'quantity' => 10,
-                'product' => (object)[
-                    'product_name' => '鉛筆',
-                    'description' => '描きやすい鉛筆です',
-                    'price' => 200,
-                ]
-            ],
-            (object)[
-                'quantity' => 1,
-                'product' => (object)[
-                    'product_name' => 'イヤホン',
-                    'description' => 'ワイヤレスです。',
-                    'price' => 1000,
-                ]
-            ],
-            (object)[
-                'quantity' => 2,
-                'product' => (object)[
-                    'product_name' => 'タブレット',
-                    'description' => '軽量です',
-                    'price' => 25000,
-                ]
-            ],
-            (object)[
-                'quantity' => 5,
-                'product' => (object)[
-                    'product_name' => 'デスク',
-                    'description' => '昇降できます',
-                    'price' => 30000,
-                ]
-            ],
-        ]);
-        // Sale::with('product')
-        // ->orderBy('created_at', 'asc')
-        // ->get();
+        $sales = \App\Models\Sales::with('product')
+        ->where('user_id', \Auth::id())
+        ->orderBy('created_at', 'desc')
+        ->get();
 
         return view('mypage', compact('user', 'products', 'sales'));
     }
