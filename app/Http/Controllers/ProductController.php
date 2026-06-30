@@ -7,6 +7,9 @@ use App\Models\Product;
 use App\Models\Like;
 // use App\Models\Sales;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ProductRequest;
+use App\Http\Requests\UserRequest;
+use App\Http\Requests\ContactRequest;
 
 class ProductController extends Controller
 {
@@ -76,11 +79,11 @@ class ProductController extends Controller
         if ($product->stock <= $quantity) {
             if ($request->wantsJson() || $request->is('api/*')) {
                 return response()->json([
-                    'error' => '在庫が不足しております。現在の在庫は{$product->stock}個です。'
+                    'error' => "在庫が不足しております。現在の在庫は{$product->stock}個です。"
                 ], 400);
             }
 
-            return redirect()->back()->with('error', '申し訳ありません。在庫が不足しております。(残り{$product->stock}個)');
+            return redirect()->back()->with('error', "申し訳ありません。在庫が不足しております。(残り{$product->stock}個)");
         }
 
         $product->decrement('stock', $quantity);
@@ -119,15 +122,8 @@ class ProductController extends Controller
         return view('mypage', compact('user', 'products', 'sales'));
     }
 
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        $request->validate([
-            'product_name' => 'required|string|max:255',
-            'price' => 'required|integer|min:0',
-            'description' => 'required|string',
-            'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -154,14 +150,8 @@ class ProductController extends Controller
         return view('edit_account', compact('user'));
     }
 
-    public function updateAccount(Request $request) 
+    public function updateAccount(UserRequest $request) 
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'name_kanji' => 'required|string|max:255',
-            'name_kana' => 'required|string|max:255',
-        ]);
 
         $user = \App\Models\User::find(\Auth::id());
 
@@ -180,13 +170,8 @@ class ProductController extends Controller
         return view('contact');
     }
 
-    public function sendContact(Request $request)
+    public function sendContact(ContactRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
-            'contact' => 'required|string',
-        ]);
 
         return redirect()->route('index')->with('success', 'お問い合わせを送信しました！');
     }
@@ -214,15 +199,8 @@ class ProductController extends Controller
         return view('mypage_product_edit', compact('product'));
     }
 
-    public function updateMyProduct(Request $request, $id)
+    public function updateMyProduct(ProductRequest $request, $id)
     {
-        $request->validate([
-            'product_name' => 'required|string|max:255',
-            'price' => 'required|integer|min:0',
-            'description' => 'required|string',
-            'stock' => 'required|integer|min:0',
-            'img_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
 
         $product = \App\Models\Product::find($id);
 
