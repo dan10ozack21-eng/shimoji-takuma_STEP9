@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>CyTech EC</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -19,12 +19,12 @@
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-<body>
-    <div id="app">
+<body class="d-flex flex-column min-vh-100">
+    <div id="app" class="d-flex flex-column flex-grow-1">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
+            <div class="custom-header d-flex px-5">
+                <a class="navbar-brand" href="{{ url('/index') }}">
+                    CyTech EC
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -39,19 +39,19 @@
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('index') }}">Home</a>
+                            <a class="nav-link custom-nav-link" href="{{ route('index') }}">Home</a>
                         </li>
 
                         @auth
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('mypage') }}">マイページ</a>
+                            <a class="nav-link custom-nav-link" href="{{ route('mypage') }}">マイページ</a>
                         </li>
                         @endauth
 
 
                     @guest
                         @if (Route::has('login'))
-                        <li class="nav-item me-2">            
+                        <li class="nav-item mx-2">            
                             <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                         </li>        
                         @endif
@@ -83,20 +83,25 @@
             </div>
         </nav>
 
-        <main class="py-4">
+        <main class="flex-grow-1 py-4">
             @yield('content')
         </main>
 
-        <footer class="bg-white border-top py-3 mt-auto">
-            <div class="container text-center text-muted">
+        <footer class="custom-footer border-top p-0 mt-auto">
+
+            <div class="footer-links-area text-center text-muted py-3">
                 <a href="{{ route('contact') }}" class="btn btn-primary">お問い合わせ</a>
-                <div class="d-flex justify-content-center gap-3 mt-2 mb-2">
-                    <a href="{{ route('index') }}" class="text-decoration-none text-secondary">Home</a>
+                <div class="d-flex justify-content-center gap-3 mt-2 mb-0">
+                    <a href="{{ route('index') }}" class="nav-link custom-nav-link">Home</a>
                     @auth
-                    <a href="{{ route('mypage') }}" class="text-decoration-none text-secondary">マイページ</a>
+                    <a href="{{ route('mypage') }}" class="nav-link custom-nav-link">マイページ</a>
                     @endauth
                 </div>
-                <small>&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</small>
+                
+            </div>
+
+            <div class="footer-copy-area text-center py-3 w-100 m-0">
+                <p class="mb-0">&copy; {{ date('Y') }} {{ config('app.name', 'Laravel') }}. All rights reserved.</p>
             </div>
 
         </footer>

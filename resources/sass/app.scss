@@ -6,3 +6,37 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+
+.custom-header {
+    width: 100%;
+    border-bottom: 2px solid rgb(183, 255, 159);
+
+    .navbar-brand {
+        font-weight: bold;
+    }
+}
+
+.custom-nav-link {
+    color: #007bff !important;
+    transition: font-weight 0.2s ease;
+
+    &:hover {
+        color: #0064ce !important;
+        font-weight: bold;
+    }
+}
+
+.custom-footer {
+    width: 100%;
+
+    .footer-links-area {
+        background-color: rgb(235, 235, 235);
+    }
+
+    .footer-copy-area {
+        background-color: rgb(66, 66, 66);
+        border-top: 1px solid #dee2e6;
+        color: rgb(208, 208, 208);
+    }
+}

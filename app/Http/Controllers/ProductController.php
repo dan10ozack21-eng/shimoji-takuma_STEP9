@@ -12,7 +12,15 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('company')->get();
+        $products = Product::with('company');
+
+        if (Auth::check()) {
+            $products->where('user_id', '!=', Auth::id());
+        }
+
+        $products->orderBy('id', 'asc');
+
+        $products = $products->get();
         
         return view('index', compact('products'));
     }
@@ -105,7 +113,7 @@ class ProductController extends Controller
 
         $sales = \App\Models\Sales::with('product')
         ->where('user_id', \Auth::id())
-        ->orderBy('created_at', 'desc')
+        ->orderBy('created_at', 'asc')
         ->get();
 
         return view('mypage', compact('user', 'products', 'sales'));
