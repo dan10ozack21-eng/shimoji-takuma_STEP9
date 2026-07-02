@@ -71,7 +71,7 @@ class ProductController extends Controller
 
         $userId = auth()->check() ? auth()->id() : null;
 
-        \App\Models\Sales::executePurchase($product->id, $quantity, $userId);
+        \App\Models\Sale::executePurchase($product->id, $quantity, $userId);
 
         $product->refresh();
 
@@ -91,7 +91,7 @@ class ProductController extends Controller
         $userId = \Auth::id();
 
         $products = Product::getMyProducts($userId)->get();
-        $sales = \App\Models\Sales::getMypurchaseHistory($userId);
+        $sales = \App\Models\Sale::getMypurchaseHistory($userId);
 
         return view('mypage', compact('user', 'products', 'sales'));
     }

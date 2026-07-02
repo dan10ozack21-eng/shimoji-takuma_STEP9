@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Sales extends Model
+class Sale extends Model
 {
+    protected $table = 'sales';
+
     use HasFactory;
 
     protected $fillable = [

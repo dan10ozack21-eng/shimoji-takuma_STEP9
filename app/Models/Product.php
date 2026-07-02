@@ -37,7 +37,7 @@ class Product extends Model
 
     public function sales()
     {
-        return $this->hasMany(Sales::class);
+        return $this->hasMany(Sale::class);
     }
 
     public function scopeExcludeMine(Builder $query): Builder
