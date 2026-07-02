@@ -27,8 +27,15 @@ class ProductRequest extends FormRequest
             'price'        => 'required|integer|min:0',
             'description'  => 'required|string',
             'stock'        => 'required|integer|min:0',
-            'image'        => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'img_path'     => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
+
+        if ($this->isMethod('post')) {
+            $rules['image'] = ['required', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'];
+        } else {
+            $rules['img_path'] = ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'];
+            $rules['image']    = ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'];
+        }
+
+        return $rules;
     }
 }

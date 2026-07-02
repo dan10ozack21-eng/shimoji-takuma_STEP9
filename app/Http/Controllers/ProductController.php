@@ -15,16 +15,8 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('company');
+        $products = Product::getAvailableList()->get();
 
-        if (Auth::check()) {
-            $products->where('user_id', '!=', Auth::id());
-        }
-
-        $products->orderBy('id', 'asc');
-
-        $products = $products->get();
-        
         return view('index', compact('products'));
     }
 
@@ -32,16 +24,7 @@ class ProductController extends Controller
     {
         $userId = Auth::id();
 
-        $like = Like::where('user_id', $userId)->where('product_id', $id)->first();
-
-        if ($like) {
-            $like->delete();
-        } else {
-            Like::create([
-                'user_id' => $userId,
-                'product_id' => $id,
-            ]);
-        }
+        Like::toggleLike($userId, $id);
 
         return redirect()->back();
     }
@@ -53,7 +36,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['company', 'likes'])->findOrFail($id);
+        $product = Product::findWithRelations($id, ['company', 'likes']);
 
         $isLiked = false;
         if (auth()->check()) {
@@ -65,18 +48,18 @@ class ProductController extends Controller
 
     public function purchase($id)
     {
-        $product = Product::with('company')->findOrFail($id);
+        $product = Product::findWithRelations($id, ['company']);
 
         return view('purchase', compact('product'));
     }
 
     public function completePurchase(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::findWithRelations($id);
 
         $quantity = $request->input('quantity', 1);
         
-        if ($product->stock <= $quantity) {
+        if ($product->stock < $quantity) {
             if ($request->wantsJson() || $request->is('api/*')) {
                 return response()->json([
                     'error' => "在庫が不足しております。現在の在庫は{$product->stock}個です。"
@@ -86,15 +69,11 @@ class ProductController extends Controller
             return redirect()->back()->with('error', "申し訳ありません。在庫が不足しております。(残り{$product->stock}個)");
         }
 
-        $product->decrement('stock', $quantity);
-
         $userId = auth()->check() ? auth()->id() : null;
 
-        \App\Models\Sales::create([
-            'user_id' => $userId,
-            'product_id' => $product->id,
-            'quantity' => $quantity,
-        ]);
+        \App\Models\Sales::executePurchase($product->id, $quantity, $userId);
+
+        $product->refresh();
 
         if ($request->wantsJson() || $request->is('api/*')) {
             return response()->json([
@@ -108,16 +87,11 @@ class ProductController extends Controller
 
     public function mypage()
     {
-        // $user = Auth::user();
-
         $user = \Auth::user();
+        $userId = \Auth::id();
 
-        $products = Product::where('user_id', \Auth::id())->orderBy('id', 'asc')->get();
-
-        $sales = \App\Models\Sales::with('product')
-        ->where('user_id', \Auth::id())
-        ->orderBy('created_at', 'asc')
-        ->get();
+        $products = Product::getMyProducts($userId)->get();
+        $sales = \App\Models\Sales::getMypurchaseHistory($userId);
 
         return view('mypage', compact('user', 'products', 'sales'));
     }
@@ -130,15 +104,7 @@ class ProductController extends Controller
             $imagePath = $request->file('image')->store('images', 'public');
         }
 
-        \App\Models\Product::create([
-            'user_id' => \Auth::id(),
-            'company_id' => 1,
-            'product_name' => $request->product_name,
-            'price' => $request->price,
-            'stock' => $request->stock,
-            'description' => $request->description,
-            'img_path' => $imagePath,
-        ]);
+        Product::createProduct($request->validated(), $imagePath, \Auth::id());
 
         return redirect()->route('mypage')->with('success', '商品が新しく登録されました！');
     }
@@ -152,15 +118,7 @@ class ProductController extends Controller
 
     public function updateAccount(UserRequest $request) 
     {
-
-        $user = \App\Models\User::find(\Auth::id());
-
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->name_kanji = $request->name_kanji;
-        $user->name_kana = $request->name_kana;
-
-        $user->save();
+        \App\Models\User::updateAccountInfo(\Auth::id(), $request->validated());
 
         return redirect()->route('mypage')->with('success', 'アカウント情報を更新しました！');
     }
@@ -185,9 +143,7 @@ class ProductController extends Controller
 
     public function destroyProduct($id)
     {
-        $product = \App\Models\Product::findOrFail($id);
-
-        $product->delete();
+        \App\Models\Product::deleteProduct($id);
 
         return redirect()->route('mypage')->with('success', '商品を削除しました。');
     }
@@ -201,40 +157,19 @@ class ProductController extends Controller
 
     public function updateMyProduct(ProductRequest $request, $id)
     {
-
-        $product = \App\Models\Product::find($id);
-
-        $product->product_name = $request->product_name;
-        $product->price = $request->price;
-        $product->description = $request->description;
-        $product->stock = $request->stock;
+        $imagePath = null;
         if ($request->hasFile('img_path')) {
-            $img_path = $request->file('img_path')->store('img_path', 'public');
-            $product->img_path = $img_path;
+            $imagePath = $request->file('img_path')->store('img_path', 'public');
         }
 
-        $product->save();
+        \App\Models\Product::updateProductInfo($id, $request->validated(), $imagePath);
 
-        return redirect()->route('mypage_product_detail', $product->id)->with('success', '出品商品情報の更新が完了しました！');
+        return redirect()->route('mypage_product_detail', $id)->with('success', '出品商品情報の更新が完了しました！');
     }
 
     public function search(Request $request)
     {
-        $query = Product::query();
-
-        if ($request->filled('product_name')) {
-            $query->where('product_name', 'like', '%'. $request->product_name . '%');
-        }
-
-        if ($request->filled('min_price')) {
-            $query->where('price', '>=', $request->min_price);
-        }
-
-        if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->max_price);
-        }
-
-        $products = $query->orderBy('id', 'asc')->get();
+        $products = Product::searchFilter($request->only(['product_name', 'min_price', 'max_price']))->get();
 
         return view('index', compact('products'));
     }

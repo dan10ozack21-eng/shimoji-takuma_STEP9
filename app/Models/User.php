@@ -49,4 +49,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Like::class);
     }
+
+    public static function updateAccountInfo(int $userId, array $data): void
+    {
+        $user = self::findOrFail($userId);
+        $user->update([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'name_kanji' => $data['name_kanji'],
+            'name_kana' => $data['name_kana'] ?? null,
+        ]);
+    }
 }
