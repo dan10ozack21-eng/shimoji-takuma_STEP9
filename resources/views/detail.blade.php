@@ -11,7 +11,7 @@
                 <p><strong>商品名：</strong>{{ $product->product_name }}</p>
                 <p><strong>説明：</strong>{{ $product->description }}</p>
                 <p><strong>画像：</strong><br>
-                    <img src="{{ asset('storage/' . $product->img_path) }}" alt="{{ $product->product_name }}" class="img-fluid mt-2" style="max-width: 300px;">
+                    <img src="{{ asset('storage/' . $product->img_path) }}" alt="{{ $product->product_name }}" class="img-fluid mt-2 detail-img">
                 </p>
                 <p><strong>金額：</strong>¥{{ $product->price }}</p>
                 <p><strong>会社：</strong>{{ $product->company->company_name }} </p>
@@ -22,12 +22,11 @@
                 <form action="{{ route('products.toggle_like', $product->id) }}" method="POST">
                     @csrf
                     @if($isLiked)
-                    <button type="submit" class="btn text-danger p-0 border-0 shadow-none" style="font-size: 2rem; line-height: 1;">
+                    <button type="submit" class="btn text-danger p-0 border-0 shadow-none like-btn like-btn-active">
                         ♥
                     </button>
                     @else
-                    <button type="submit" class="btn text-muted p-0 border-0 shadow-none" style="font-size: 2rem; line-height: 1; transition: color 0.2s;" 
-                        onmouseover="this.style.color='#dc3545'" onmouseout="this.style.color='#6c757d'">
+                    <button type="submit" class="btn text-muted p-0 border-0 shadow-none like-btn like-btn-inactive">
                         ♡
                     </button>
                     @endif
@@ -45,4 +44,5 @@
         </div>
     </div>
 </div>
+
 @endsection

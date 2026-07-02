@@ -40,3 +40,26 @@
         color: rgb(208, 208, 208);
     }
 }
+
+.detail-img, .purchase-img {
+    max-width: 300px;
+}
+
+.like-btn {
+    font-size: 2rem;
+    line-height: 1;
+    background: none;
+
+    &-active {
+        color: #dc3545;
+    }
+
+    &-inactive {
+        color: #6c757d;
+        transition: color 0.2s;
+
+        &-hover {
+            color: #dc3545;
+        }
+    }
+}

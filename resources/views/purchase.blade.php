@@ -11,7 +11,7 @@
                  <p>商品名：{{ $product->product_name }}</p>
                  <p>説明：{{ $product->description }}</p>
                  <p>画像：<br>
-                     <img src="{{ asset('storage/' . $product->img_path) }}" alt="{{ $product->product_name }}" class="img-fluid" style="max-width: 300px;">
+                     <img src="{{ asset('storage/' . $product->img_path) }}" alt="{{ $product->product_name }}" class="purchase-img">
                  </p>
              <p>
                 @if($product->stock >0)
@@ -36,4 +36,5 @@
             </form>
         </div>
 </div>
+
 @endsection
